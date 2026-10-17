@@ -1,0 +1,13 @@
+{
+  "id": "AFA-001",
+  "title": "The purchase succeeded. The response disappeared.",
+  "subtitle": "A retry turns one approved request into two purchase orders.",
+  "classification": "Intentionally constructed teaching example (deterministic simulation)",
+  "controller": "Deterministic reference controller; no live model",
+  "domain": "Fictional procurement",
+  "failure_boundary": "After database commit, before the tool response reaches the controller",
+  "root_cause": "The vulnerable controller treats an unknown outcome as a failed action, retries with a new operation key, and uses a tool without logical-intent uniqueness.",
+  "repair": "Look up the logical purchase intent, reuse a stable operation key, and enforce intent uniqueness in the purchase service.",
+  "limits": "This proves behavior in a single-process SQLite simulation. It does not establish a live model failure rate, external connector guarantees, or government compliance.",
+  "related_project": "Designed for a future Agent Rehearsal adapter. No integration is claimed in this release."
+}

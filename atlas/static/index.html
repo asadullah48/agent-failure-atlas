@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="Reproduce an agent workflow failure. Inspect actual state. Verify the repair.">
+  <title>Agent Failure Atlas · Case 001</title>
+  <link rel="stylesheet" href="/styles.css"><script src="/app.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to investigation</a>
+<aside class="sidebar">
+  <a class="brand" href="/" aria-label="Agent Failure Atlas home"><span class="brand-symbol">a<span>f</span>a</span><span>AGENT FAILURE<br><strong>ATLAS</strong></span></a>
+  <div class="side-label">THE INVESTIGATIONS</div>
+  <a class="case-link active" href="#main"><span class="case-number">001</span><span>The lost response<small>Tool execution · Procurement</small></span><span class="dot"></span></a>
+  <div class="side-label planned-title">RESEARCH BACKLOG</div>
+  <div class="case-link muted"><span class="case-number">002</span><span>Approval withdrawn<small>Planned · not implemented</small></span></div>
+  <div class="case-link muted"><span class="case-number">003</span><span>Stale supplier evidence<small>Planned · not implemented</small></span></div>
+  <div class="side-note"><span class="tiny-label">THE METHOD</span><p>Reproduce the failure.<br>Inspect the state.<br>Verify the repair.</p><div class="side-line"></div><small>Built by Asadullah Shafique<br>Agentic AI Systems Engineer</small></div>
+</aside>
+<div class="workspace">
+  <header class="topbar"><span>Engineering investigations <span class="slash">/</span> <strong>AFA-001</strong></span><span class="local"><span class="dot"></span> LOCAL LAB</span></header>
+  <main id="main">
+    <div class="eyebrow"><span>CASE FILE 001</span><span class="pill">EXECUTION RELIABILITY</span></div>
+    <h1>The purchase succeeded.<br><span>The response disappeared.</span></h1>
+    <p class="intro">A timeout is an unknown outcome. Watch an unsafe retry create a second purchase, then inspect the repair that reconciles the first.</p>
+    <div class="tags"><span>Fictional procurement</span><span>Deterministic controller</span><span>No live model or real purchases</span></div>
+    <p class="sim-notice"><strong>Deterministic simulation.</strong> Every run replays the same scripted controller against synthetic data. It does not measure any real model’s failure rate.</p>
+
+    <section class="experiment" aria-labelledby="experiment-title">
+      <div class="experiment-header"><div><span class="tiny-label">01 / REPRODUCE</span><h2 id="experiment-title">Same request. Different recovery.</h2></div><span id="run-status" class="status-chip" role="status">Ready to run</span></div>
+      <div class="scenario-settings"><div><strong>Inject a lost response</strong><p>The purchase commits before its response is dropped.</p></div><label class="toggle"><input id="fault" type="checkbox" checked><span class="switch"></span><span id="fault-label">Enabled</span></label></div>
+      <div class="experiment-actions"><button id="compare" class="button primary">Run comparison <span aria-hidden="true">↗</span></button><button id="download" class="button secondary" disabled>Export evidence ↓</button><span class="run-note">Two isolated SQLite worlds · no API key</span></div>
+      <p id="error" class="error" role="alert" hidden></p>
+    </section>
+
+    <div class="comparison" aria-live="polite">
+      <article class="result-card vulnerable"><div class="card-title"><span class="mode-label"><span class="marker">A</span>Vulnerable</span><span id="v-status" class="result-status">NOT RUN</span></div><p class="strategy">Assume failure. Retry with a new key.</p><p class="teaching-label">Intentionally constructed teaching example — not a bug in any real framework.</p><div class="claim"><span class="tiny-label">CONTROLLER CLAIM</span><p id="v-claim">Run the experiment to capture its claim.</p></div><div class="actual-label tiny-label">ACTUAL SYSTEM STATE</div><div class="metrics"><div><strong id="v-orders">—</strong><span>purchase orders</span></div><div><strong id="v-spend">—</strong><span>AED spent</span></div></div><div id="v-message" class="outcome">No result yet. Nothing has been simulated.</div></article>
+      <article class="result-card repaired"><div class="card-title"><span class="mode-label"><span class="marker">B</span>Repaired</span><span id="r-status" class="result-status">NOT RUN</span></div><p class="strategy">Reconcile intent. Reuse the committed result.</p><div class="claim"><span class="tiny-label">CONTROLLER CLAIM</span><p id="r-claim">Run the experiment to capture its claim.</p></div><div class="actual-label tiny-label">ACTUAL SYSTEM STATE</div><div class="metrics"><div><strong id="r-orders">—</strong><span>purchase orders</span></div><div><strong id="r-spend">—</strong><span>AED spent</span></div></div><div id="r-message" class="outcome">No result yet. Nothing has been simulated.</div></article>
+    </div>
+
+    <section class="evidence-panel" aria-labelledby="evidence-title"><div class="section-header"><div><span class="tiny-label">02 / INSPECT</span><h2 id="evidence-title">The evidence, event by event.</h2></div><div class="segmented" aria-label="Select run"><button id="view-v" aria-pressed="true">Vulnerable</button><button id="view-r" aria-pressed="false">Repaired</button></div></div>
+      <div class="trace-layout"><div><div class="trace-toolbar"><span id="trace-count">No recorded events</span><button class="text-button" id="replay" disabled>Replay trace ↻</button></div><div id="trace" class="trace"><div class="empty"><span class="empty-icon">≋</span><h3>Evidence starts with a run.</h3><p>The timeline will display actual recorded tool calls,<br>commits, responses, and controller decisions.</p></div></div></div><aside class="checks"><span class="tiny-label">INDEPENDENT CHECKS</span><p class="checks-help">Evaluated against the ledger and recorded events, not the controller’s claim.</p><div id="checks"><p class="pending">Waiting for evidence.</p></div><div id="hash" class="hash" hidden></div></aside></div>
+    </section>
+
+    <section class="lesson" aria-labelledby="lesson-title"><div><span class="tiny-label">03 / UNDERSTAND</span><h2 id="lesson-title">The failure lives between<br>commit and acknowledgement.</h2><p>“No response” does not mean “no purchase.” The vulnerable controller invents that certainty and repeats a side effect.</p></div><div class="repair-steps"><div><span>01</span><p><strong>Reconcile the intent</strong>Ask the purchase service whether this request already committed.</p></div><div><span>02</span><p><strong>Keep the operation key</strong>A retry belongs to the same operation. It must not become a new purchase.</p></div><div><span>03</span><p><strong>Enforce uniqueness at the tool</strong>The purchase service prevents a duplicate even if the controller supplies a different key.</p></div></div></section>
+    <details class="limits"><summary>What this investigation does not prove <span>+</span></summary><p>This intentionally constructed teaching example is a deterministic simulation: a scripted controller runs against synthetic data. The vulnerable version is not a bug in any real framework. It does not establish a live model’s failure rate, real procurement compliance, or external API guarantees. The repaired tool uses local SQLite transactions; real services need their own idempotency and reconciliation contracts. Recorded replay is playback, not process crash recovery. Evidence hashes detect changes relative to a trusted digest; they are not independent provenance or a tamper-proof audit.</p><p>Agent Rehearsal integration, additional cases, live adapters, and Arabic support are planned, not implemented.</p></details>
+    <footer><span>AGENT FAILURE ATLAS <span class="footer-dot">·</span> LOCAL EDITION 0.1</span><span>Claims are hypotheses. State is evidence.</span></footer>
+  </main>
+</div>
+</body></html>

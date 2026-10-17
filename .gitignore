@@ -1,0 +1,30 @@
+# Python caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Databases
+*.db
+*.sqlite
+*.sqlite3
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Evidence exports (CLI --export folders and browser downloads)
+reports/
+AFA-*-evidence.json
+
+# Local runtime / secrets
+.atlas/
+*.log
+.env
+.env.*
+
+# OS
+.DS_Store
+Thumbs.db
