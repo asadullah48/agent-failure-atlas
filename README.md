@@ -21,10 +21,10 @@ Both controllers in Case 001 report the same thing: *"The request was completed 
 | **Task** | Purchase one approved request (`REQ-001`, AED 1,250.00) from a fictional department budget of AED 10,000.00. |
 | **Failure trigger** | Injected fault *after* the purchase transaction commits and *before* the response reaches the controller. The controller sees a timeout with an unknown outcome. The fault fires once per isolated run. |
 | **Agent statement** | "The request was completed successfully." (identical in both versions) |
-| **Actual state** | **Vulnerable:** 2 purchase orders, AED 2,500.00 spent, verdict **fail** (`one_order_per_intent`, `expected_spend`, `reconcile_unknown` fail). **Repaired:** 1 purchase order, AED 1,250.00 spent, verdict **pass** (all 6 checks pass). With no fault injected, both versions pass. |
+| **Actual state** | **Vulnerable:** 2 purchase orders, AED 2,500.00 spent, verdict **fail** (`one_order_per_intent`, `expected_spend`, `approval_evidence`, `reconcile_unknown` fail). **Repaired:** 1 purchase order, AED 1,250.00 spent, verdict **pass** (all 6 checks pass). With no fault injected, both versions pass. |
 | **Root cause** | The vulnerable controller treats "no response" as "no purchase," retries with a **new** operation key, and calls a tool that does not enforce one order per logical intent. |
 | **Fix** | (1) Reconcile first: look up the purchase by intent before any retry. (2) Keep a stable operation key, so a retry belongs to the same operation. (3) Enforce uniqueness at the tool: `UNIQUE` indexes on intent and operation key, and a conflicting payload under a reused key is rejected (`IDEMPOTENCY_CONFLICT`). |
-| **Regression check** | `test_vulnerable_reproduces_duplicate` (2 orders, fail), `test_repaired_reconciles_without_duplicate` (1 order, lookup recorded, pass), `test_repaired_retries_and_changed_key_do_not_duplicate`, and `test_lost_response_really_commits` (the fault really happens after commit). This regression was first observed failing, then fixed; see `docs/VALIDATION.md`. |
+| **Regression check** | `test_vulnerable_reproduces_duplicate` (2 orders, fail), `test_repaired_reconciles_without_duplicate` (1 order, lookup recorded, pass), `test_repaired_retries_and_changed_key_do_not_duplicate`, and `test_lost_response_really_commits` (the fault really happens after commit).<br>`test_reused_approval_fails_approval_evidence` (approvals are single-use: the vulnerable run fails with "Approval APR-001 backed 2 purchases"; the repaired run still passes). This regression was first observed failing, then fixed; see `docs/VALIDATION.md`. |
 | **Limits** | Single-process, in-memory SQLite. Deterministic controller with no live model. The lost response is simulated in-process. See [What this does NOT prove](#what-this-does-not-prove). |
 
 ## How to run on Windows
@@ -51,7 +51,7 @@ The server binds to loopback only and rejects foreign `Host`/`Origin` headers. D
 py -3 -m unittest discover -s tests -v
 ```
 
-Current result: **20 tests, 20 passed, 0 failed** (core simulator, HTTP server, CLI). Run on Windows with Python 3.14.7 on 2026-10-17. Standard library only.
+Current result: **22 tests, 22 passed, 0 failed** (core simulator, HTTP server, CLI). Run on Windows with Python 3.14.7 on 2026-10-17. Standard library only.
 
 Export and verify evidence from the CLI:
 
@@ -70,7 +70,6 @@ The vulnerable run's **fail** verdict is the intended demonstration, not a faili
 - **No real incidents or customers.** Case 001 was constructed for teaching. It is not a reproduction of a reported incident, and no real purchases occur.
 - **Local guarantees only.** SQLite transactions in one process are not external payment or procurement APIs. Real services need their own idempotency, authorization, and reconciliation contracts.
 - **Not tested:** network partitions, distributed races, process crash recovery, or an eventually consistent lookup. The scenario always commits before the response is lost, so the "lookup finds nothing, retry with the same key" branch is covered only indirectly.
-- **The approval check is narrow.** `approval_evidence` confirms that each commit has a matching earlier approval. It does not detect one approval being used for two purchases (the vulnerable run passes that check). The duplicate is caught by `one_order_per_intent` and `expected_spend`.
 - **Hashes are not provenance.** The event hash chain detects edits relative to a trusted saved digest. Anyone who can rewrite every hash can produce a self-consistent forgery.
 - **Replay is playback** of recorded events, not re-execution.
 - **Browser and visual QA** have not been completed and recorded (see `docs/DEVELOPMENT-CHECKPOINT.md`).
@@ -88,7 +87,7 @@ atlas/core.py                 simulator, tool boundary, independent evaluator
 atlas/server.py               loopback HTTP API and static allowlist
 atlas/static/                 web interface
 cases/001-response-lost.json  case metadata
-tests/                        unittest suite (20 tests)
+tests/                        unittest suite (22 tests)
 docs/                         case notes, validation record, checkpoint
 run.py                        server + export/verify CLI
 start-windows.cmd             Windows launcher

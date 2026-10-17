@@ -142,6 +142,11 @@ def evaluate(world):
         and a["payload"]["approval_id"] == c["payload"]["approval_id"]
         and a["payload"]["amount_minor"] == c["payload"]["amount_minor"]
         for a in events) for c in commits) and bool(commits)
+    # An approval is single-use: reuse fails regardless of total spend.
+    uses = {}
+    for c in commits:
+        uses[c["payload"]["approval_id"]] = uses.get(c["payload"]["approval_id"], 0) + 1
+    reused = {k: n for k, n in uses.items() if n > 1}
     rows = [
         ("one_order_per_intent", "One purchase for one request", one,
          f"{state['order_count']} purchase order(s) for {INTENT}", [e["seq"] for e in commits]),
@@ -150,8 +155,9 @@ def evaluate(world):
         ("ledger_balances", "Ledger balances against purchase records",
          state["spent_minor"] == order_sum and 0 <= state["spent_minor"] <= state["budget_minor"],
          f"Ledger spent {state['spent_minor']}; order sum {order_sum}", [e["seq"] for e in commits]),
-        ("approval_evidence", "Commit has matching prior approval evidence", authorized,
-         "Each commit needs matching earlier approval", [e["seq"] for e in commits]),
+        ("approval_evidence", "Commit has matching prior approval evidence", authorized and not reused,
+         "; ".join(f"Approval {k} backed {n} purchases" for k, n in reused.items())
+         or "Each commit needs matching earlier approval", [e["seq"] for e in commits]),
         ("commit_evidence", "Every purchase has a matching commit event",
          len(commits) == len(state["purchase_orders"]) and
          sorted(c["payload"]["order_id"] for c in commits) == sorted(o["id"] for o in state["purchase_orders"]),

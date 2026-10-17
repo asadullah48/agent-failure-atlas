@@ -65,6 +65,18 @@ class CaseTests(unittest.TestCase):
         assertions = {a["id"]: a["status"] for a in evaluate(w)}
         self.assertEqual(assertions["ledger_balances"], "fail")
 
+    def test_reused_approval_fails_approval_evidence(self):
+        report = run_case("vulnerable", True)
+        check = next(a for a in report["assertions"] if a["id"] == "approval_evidence")
+        self.assertEqual(check["status"], "fail")
+        self.assertIn("APR-001", check["observed"])
+        self.assertIn("2 purchases", check["observed"])
+
+    def test_single_use_approval_passes_approval_evidence(self):
+        report = run_case("repaired", True)
+        check = next(a for a in report["assertions"] if a["id"] == "approval_evidence")
+        self.assertEqual(check["status"], "pass")
+
     def test_evaluator_detects_missing_commit_evidence(self):
         w = World("repaired", False)
         self.addCleanup(w.db.close)
