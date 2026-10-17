@@ -155,9 +155,10 @@ def evaluate(world):
         ("ledger_balances", "Ledger balances against purchase records",
          state["spent_minor"] == order_sum and 0 <= state["spent_minor"] <= state["budget_minor"],
          f"Ledger spent {state['spent_minor']}; order sum {order_sum}", [e["seq"] for e in commits]),
-        ("approval_evidence", "Commit has matching prior approval evidence", authorized and not reused,
+        ("approval_evidence", "Each commit has its own prior approval", authorized and not reused,
          "; ".join(f"Approval {k} backed {n} purchases" for k, n in reused.items())
-         or "Each commit needs matching earlier approval", [e["seq"] for e in commits]),
+         or "Every commit needs an earlier approval, and each approval may back only one purchase",
+         [e["seq"] for e in commits]),
         ("commit_evidence", "Every purchase has a matching commit event",
          len(commits) == len(state["purchase_orders"]) and
          sorted(c["payload"]["order_id"] for c in commits) == sorted(o["id"] for o in state["purchase_orders"]),
