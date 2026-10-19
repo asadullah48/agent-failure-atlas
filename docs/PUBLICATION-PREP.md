@@ -31,3 +31,15 @@ The complete current case page cannot run on GitHub Pages without a server. A fu
 MIT license, public-reader README with honest limits and related-project link, offline push/PR CI, tracked-file path guard, and evidence-mapped portfolio card draft. CI installs Python, checks out the repository, and runs standard-library unittest on Linux (Python 3.10 and 3.14) and Windows (3.14); it uses no configured secrets. The test execution is offline; Actions checkout and Python setup require network access.
 
 Local results do not establish hosted CI success. Browser/visual QA, other Python/OS matrix combinations, Pages, and production behavior remain unverified. Prior validation documents retain their historical results.
+
+## Static recording follow-up - 2026-10-19
+
+The earlier Pages decision above describes the app before this follow-up. Added a separate `atlas.snapshot` generator while retaining the live local app unchanged. Command: `python -m atlas.snapshot --output site/`. It executes both fixed fault-on modes and emits deterministic, read-only HTML, local CSS, and full JSON evidence. Every HTML page labels the output as a recorded, scripted/offline, synthetic example, not a live AI agent.
+
+Six snapshot tests cover fresh-run equality and visible results, external-resource/path exclusions, HTML escaping, deterministic output, non-overwrite behavior, and CLI generation. Full suite: **29 tests passed** on Windows / Python 3.14.7 using `py -3 -X utf8 -m unittest discover -s tests -v`.
+
+Prepared `.github/workflows/pages.yml` builds from source on push to `main` and supports `workflow_dispatch`; deployment is restricted to `main`. Official GitHub actions only, no new dependencies. Status: **unverified until first Pages deploy**. No workflow dispatch, Pages enablement, merge, rename, visibility change or deployment performed during preparation. Responsive CSS stacks the comparison below 680px; phone visual inspection is recorded separately if performed.
+
+Branch correction: static snapshot prepared on `feat/static-snapshot`, based directly on `main` at `1d943e2`, as requested. Pages is already enabled with `build_type=workflow` per owner. The workflow uses official `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions; automatic Pages enablement is disabled. The generated snapshot remains **unverified until first Pages deploy**.
+
+Static snapshot browser check: the generated directory was served on loopback only. At 380px the comparison used one 337px column, a 17px body font, and no horizontal overflow; the top viewport screenshot was visually inspected. At 1280px it used two 534px columns with no horizontal overflow. Both cards exposed the expected 2/1 order counts. Only local CSS and the browser's automatic local favicon request (404) were observed. The temporary preview server was stopped. This check applies to the static snapshot; the interactive app's older browser checklist remains separate.

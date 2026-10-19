@@ -26,3 +26,7 @@ Scripted/offline, synthetic data, not a live AI agent. No production claim, meas
 Related project: [Agent Rehearsal](https://github.com/asadullah48/agent-rehearsal) is the deep simulator; Atlas is a compact, single-case field guide that can grow case by case. This describes the relationship, not an implemented integration: Atlas uses its own `atlas/core.py`.
 
 Suggested link after owner review: repository source. No live-demo link or deployment claim; the current UI needs its local Python API (`atlas/static/app.js:run`, `atlas/server.py:Handler.do_POST`).
+
+## Recorded snapshot follow-up
+
+Intended [recorded snapshot URL](https://asadullah48.github.io/agent-failure-atlas/): **unverified until first Pages deploy**. This is a scripted/offline recording using synthetic data, not a live AI agent or production service. Generate with `python -m atlas.snapshot --output site/`; source: `atlas/snapshot.py`. Fresh-run equality and rendered counts: `test_snapshot_values_match_fresh_runs_and_rendered_cards`. Resource/path exclusions: `test_generated_files_have_no_external_resources_or_absolute_paths`. Escaping: `test_report_content_is_html_escaped`. Full suite now has 29 passing tests (`py -3 -X utf8 -m unittest discover -s tests -v`); the earlier 23-test statement is the initial publication-prep checkpoint. [Agent Rehearsal](https://asadullah48.github.io/agent-rehearsal/) is the deep version. The interactive local server remains separate.
