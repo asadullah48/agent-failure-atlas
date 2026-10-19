@@ -79,7 +79,7 @@ class SnapshotTests(unittest.TestCase):
                 self.assertIn(value, visible)
             self.assertNotIn('1 purchase orders', visible)
             self.assertNotIn('1 duplicate purchase orders', visible)
-            self.assertIn('Pages status: deployed from main by the Pages workflow.', visible)
+            self.assertNotIn('Pages status:', visible)
 
     def test_generated_files_have_no_external_resources_or_absolute_paths(self):
         with tempfile.TemporaryDirectory() as tmp:

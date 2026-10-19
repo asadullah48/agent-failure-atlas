@@ -99,7 +99,7 @@ It makes no production claim or real-world failure-rate claim. It does not test 
 process-crash recovery or external payment APIs. The page only displays recorded results; use the local Python
 app to run interactive comparisons. Atlas is a compact field guide; Agent Rehearsal is the deep version,
 with no implemented integration between them.</p>
-<p>Pages status: deployed from main by the Pages workflow.</p></section>
+</section>
 <footer><p class="label">{text(LABEL)}</p><p>Generated offline with
 <code>python -m atlas.snapshot --output site/</code>. No browser scripts or external resource loads.</p></footer>
 </main></body></html>
