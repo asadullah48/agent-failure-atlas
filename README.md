@@ -35,29 +35,29 @@ Requires Python 3.10 or newer. No `pip install`.
    Or from PowerShell in the project folder:
 
    ```powershell
-   py -3 run.py
+   py -3 -X utf8 run.py
    ```
 
 2. Open **http://127.0.0.1:8765**. Keep the terminal open and press Ctrl+C to stop.
 3. Choose **Run comparison**. Toggle "Inject a lost response" off to see the fault-free control.
 
-If port 8765 is busy: `py -3 run.py --port 8766`. On Linux/macOS: `python3 run.py`.
+If port 8765 is busy: `py -3 -X utf8 run.py --port 8766`. On Linux/macOS: `python3 -X utf8 run.py`.
 
 The server binds to loopback only and rejects foreign `Host`/`Origin` headers. Do not expose it publicly.
 
 ## How to run tests
 
 ```powershell
-py -3 -m unittest discover -s tests -v
+py -3 -X utf8 -m unittest discover -s tests -v
 ```
 
-Current result: **22 tests, 22 passed, 0 failed** (core simulator, HTTP server, CLI). Run on Windows with Python 3.14.7 on 2026-10-17. Standard library only.
+Publication-prep validation: **23 tests passed** on Windows with Python 3.14.7 (2026-10-19), including the tracked-file path guard. The baseline at `c88b3e4` passed 22 tests. Standard library only; no dependency installation is needed. See [publication checks](docs/PUBLICATION-PREP.md).
 
 Export and verify evidence from the CLI:
 
 ```powershell
-py -3 run.py --export reports\first-run
-py -3 run.py --verify reports\first-run\repaired.json
+py -3 -X utf8 run.py --export reports\first-run
+py -3 -X utf8 run.py --verify reports\first-run\repaired.json
 ```
 
 `--export` refuses to overwrite an existing folder. The browser's "Export evidence" bundle (`AFA-001-evidence.json`) can also be passed to `--verify`. Verification checks **self-consistency** of the hashes, not provenance.
@@ -74,20 +74,26 @@ The vulnerable run's **fail** verdict is the intended demonstration, not a faili
 - **Replay is playback** of recorded events, not re-execution.
 - **Browser and visual QA** have not been completed and recorded (see `docs/DEVELOPMENT-CHECKPOINT.md`).
 
-## Relationship to Agent Rehearsal
+## Related project
 
-**Planned:** Atlas cases will run on the Agent Rehearsal engine. Agent Rehearsal is being developed separately, and **no integration exists yet**. Today the Atlas has its own self-contained simulator in `atlas/core.py`. The intended path is an adapter that keeps each project's core independent of the other's schema.
+[Agent Rehearsal](https://github.com/asadullah48/agent-rehearsal) is the deep simulator; Atlas is a compact, single-case field guide that can grow case by case. Atlas currently uses its own self-contained simulator in `atlas/core.py`; no integration with Agent Rehearsal exists yet.
 
-## Status: private prototype
+## Hosting and publication status
 
-Version 0.1, one case, English only. Not published, deployed, or offered as a service. Cases 002 (approval withdrawn) and 003 (stale supplier evidence) are listed in the UI as planned and are **not implemented**.
+The interface is plain HTML, CSS, and JavaScript, served by Python's standard-library HTTP server. Running a comparison calls `POST /api/run`, which executes the Python/SQLite simulator. Opening the HTML directly or uploading the assets to GitHub Pages does not provide a working case page. Root-relative asset URLs also assume the local server's root.
+
+**GitHub Pages hosting is not supported by the current app.** A future static export could precompute reports with the existing simulator and adapt the UI to read relative JSON files, with no server or new dependencies. That export is not implemented or verified. No Pages deployment workflow is included because the current case requires a server.
+
+Version 0.1, one constructed case, English only. Publication preparation does not establish a production deployment. Cases 002 (approval withdrawn) and 003 (stale supplier evidence) are listed in the UI as planned and are **not implemented**. Browser and visual QA remain unverified. CI is prepared for push and pull requests; local test results are separate from hosted CI results.
+
+Licensed under [MIT](LICENSE).
 
 ```text
 atlas/core.py                 simulator, tool boundary, independent evaluator
 atlas/server.py               loopback HTTP API and static allowlist
 atlas/static/                 web interface
 cases/001-response-lost.json  case metadata
-tests/                        unittest suite (22 tests)
+tests/                        unittest suite (23 tests)
 docs/                         case notes, validation record, checkpoint
 run.py                        server + export/verify CLI
 start-windows.cmd             Windows launcher
