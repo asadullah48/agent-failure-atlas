@@ -51,7 +51,7 @@ The server binds to loopback only and rejects foreign `Host`/`Origin` headers. D
 py -3 -X utf8 -m unittest discover -s tests -v
 ```
 
-Publication-prep validation: **23 tests passed** on Windows with Python 3.14.7 (2026-10-19), including the tracked-file path guard. The baseline at `c88b3e4` passed 22 tests. Standard library only; no dependency installation is needed. See [publication checks](docs/PUBLICATION-PREP.md).
+Publication-prep validation: **29 tests passed** on Windows with Python 3.14.7 (2026-10-19), including the tracked-file path guard and six snapshot tests. The baseline at `c88b3e4` passed 22 tests. Standard library only; no dependency installation is needed. See [publication checks](docs/PUBLICATION-PREP.md).
 
 Export and verify evidence from the CLI:
 
@@ -78,11 +78,29 @@ The vulnerable run's **fail** verdict is the intended demonstration, not a faili
 
 [Agent Rehearsal](https://github.com/asadullah48/agent-rehearsal) is the deep simulator; Atlas is a compact, single-case field guide that can grow case by case. Atlas currently uses its own self-contained simulator in `atlas/core.py`; no integration with Agent Rehearsal exists yet.
 
-## Hosting and publication status
+## Live recorded snapshot
 
-The interface is plain HTML, CSS, and JavaScript, served by Python's standard-library HTTP server. Running a comparison calls `POST /api/run`, which executes the Python/SQLite simulator. Opening the HTML directly or uploading the assets to GitHub Pages does not provide a working case page. Root-relative asset URLs also assume the local server's root.
+[Live recorded snapshot](https://asadullah48.github.io/agent-failure-atlas/) — **unverified until first Pages deploy**. This is the intended publication URL; availability is not yet verified.
 
-**GitHub Pages hosting is not supported by the current app.** A future static export could precompute reports with the existing simulator and adapt the UI to read relative JSON files, with no server or new dependencies. That export is not implemented or verified. No Pages deployment workflow is included because the current case requires a server.
+The static recording is scripted/offline, uses synthetic data, and is not a live AI agent. It shows fixed fault-on results generated from both controllers, their recorded timelines, the single-use approval rule, and the regression tests. It does not run purchases or models in the browser.
+
+Generate it offline (Python 3.10+, no dependencies):
+
+```sh
+python -m atlas.snapshot --output site/
+```
+
+Choose a new output directory; the generator refuses to overwrite an existing one. Open `site/index.html` directly. The generated `reports.json` contains the complete records; the HTML and local CSS need no server, scripts, CDN, or external resource loads. Outputs are deterministic and ignored by Git.
+
+For the **interactive local version**, run:
+
+```sh
+python -X utf8 run.py
+```
+
+Then open http://127.0.0.1:8765. On Windows use `py -3 -X utf8 run.py`. That version retains its Python/SQLite HTTP API; its interactive comparisons are separate from the static recording.
+
+The prepared Pages workflow generates the snapshot from source and deploys on push to `main`; `workflow_dispatch` can also build it manually, with deployment restricted to `main`. It uses official GitHub `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions. Pages is already enabled with workflow builds by the owner; this preparation does not change that setting. Status: **unverified until first Pages deploy**. Preparing this workflow does not enable Pages or rename the default branch.
 
 Version 0.1, one constructed case, English only. Publication preparation does not establish a production deployment. Cases 002 (approval withdrawn) and 003 (stale supplier evidence) are listed in the UI as planned and are **not implemented**. Browser and visual QA remain unverified. CI is prepared for push and pull requests; local test results are separate from hosted CI results.
 
@@ -91,9 +109,10 @@ Licensed under [MIT](LICENSE).
 ```text
 atlas/core.py                 simulator, tool boundary, independent evaluator
 atlas/server.py               loopback HTTP API and static allowlist
-atlas/static/                 web interface
+atlas/static/                 interactive web interface
+atlas/snapshot.py             offline static recording generator
 cases/001-response-lost.json  case metadata
-tests/                        unittest suite (23 tests)
+tests/                        unittest suite (29 tests)
 docs/                         case notes, validation record, checkpoint
 run.py                        server + export/verify CLI
 start-windows.cmd             Windows launcher

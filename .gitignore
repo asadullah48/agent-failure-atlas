@@ -28,3 +28,6 @@ AFA-*-evidence.json
 # OS
 .DS_Store
 Thumbs.db
+
+# Generated recorded snapshot
+site/
