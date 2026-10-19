@@ -48,8 +48,8 @@ def render_card(mode, report):
                      for check in report["assertions"])
     return f'''<article class="card" data-mode="{text(mode)}" data-orders="{text(orders)}"
  data-spent-minor="{text(state['spent_minor'])}">
-<h2>{text(mode.title())}</h2><p class="metric">{text(orders)} purchase orders</p>
-<p>{text(extra)} duplicate purchase orders beyond the one approved request.<br>
+<h2>{text(mode.title())}</h2><p class="metric">{text(orders)} purchase {'order' if orders == 1 else 'orders'}</p>
+<p>{text(extra)} duplicate purchase {'order' if extra == 1 else 'orders'} beyond the one approved request.<br>
 <strong>{text(money(state['spent_minor']))} spent</strong></p>
 <p>Controller claim: <q>{text(report['claim'])}</q></p>
 <p class="{text(mode == 'repaired' and 'pass' or 'fail')}">Recorded evaluator verdict:
@@ -86,7 +86,7 @@ Response loss is injected once after commit in each isolated run.</p></header>
 Reusing APR-001 for two purchases fails <code>approval_evidence</code>, even if the budget still balances.
 The repaired run reuses the existing purchase, not the approval for another purchase.</p>
 <h2>Which tests prove the repair?</h2><ul>
-<li><a href="{REPO}/blob/feat/static-snapshot/tests/test_core.py"><code>test_repaired_reconciles_without_duplicate</code></a>
+<li><a href="{REPO}/blob/main/tests/test_core.py"><code>test_repaired_reconciles_without_duplicate</code></a>
 checks one order, the approved spend, a recorded intent lookup, and a passing verdict.</li>
 <li><code>test_vulnerable_reproduces_duplicate</code> checks the negative control: two orders and a failing verdict.</li>
 <li><code>test_lost_response_really_commits</code> verifies that the injected timeout follows the committed purchase.</li>
@@ -99,7 +99,7 @@ It makes no production claim or real-world failure-rate claim. It does not test 
 process-crash recovery or external payment APIs. The page only displays recorded results; use the local Python
 app to run interactive comparisons. Atlas is a compact field guide; Agent Rehearsal is the deep version,
 with no implemented integration between them.</p>
-<p>Pages status: <strong>unverified until first Pages deploy</strong>.</p></section>
+<p>Pages status: deployed from main by the Pages workflow.</p></section>
 <footer><p class="label">{text(LABEL)}</p><p>Generated offline with
 <code>python -m atlas.snapshot --output site/</code>. No browser scripts or external resource loads.</p></footer>
 </main></body></html>
