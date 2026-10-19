@@ -4,7 +4,7 @@
 
 Standalone Atlas foundation and Case AFA-001. Source lives in this archive's agent-failure-atlas directory. Local working branch: codex/atlas-foundation. No remote repository, push, deployment, portfolio edit, or production integration was performed.
 
-The user's Windows D: drive was not present in the execution environment. The project was developed in an isolated Linux workspace and packaged for transfer to D:\GitHub\agent-failure-atlas. Do not claim it was written to D: or tested on Windows.
+The user's Windows D: drive was not present in the execution environment. The project was developed in an isolated Linux workspace and packaged for transfer to `./` (the repository root). Do not claim it was written to D: or tested on Windows.
 
 ## Working surfaces
 
