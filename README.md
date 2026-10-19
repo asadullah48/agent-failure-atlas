@@ -51,7 +51,7 @@ The server binds to loopback only and rejects foreign `Host`/`Origin` headers. D
 py -3 -X utf8 -m unittest discover -s tests -v
 ```
 
-Publication-prep validation: **29 tests passed** on Windows with Python 3.14.7 (2026-10-19), including the tracked-file path guard and six snapshot tests. The baseline at `c88b3e4` passed 22 tests. Standard library only; no dependency installation is needed. See [publication checks](docs/PUBLICATION-PREP.md).
+Publication-prep validation: **30 tests passed** on Windows with Python 3.14.7 (2026-10-19), including the tracked-file path guard and seven snapshot tests. The baseline at `c88b3e4` passed 22 tests. Standard library only; no dependency installation is needed. See [publication checks](docs/PUBLICATION-PREP.md).
 
 Export and verify evidence from the CLI:
 
@@ -80,7 +80,7 @@ The vulnerable run's **fail** verdict is the intended demonstration, not a faili
 
 ## Live recorded snapshot
 
-[Live recorded snapshot](https://asadullah48.github.io/agent-failure-atlas/) — **unverified until first Pages deploy**. This is the intended publication URL; availability is not yet verified.
+[Live recorded snapshot](https://asadullah48.github.io/agent-failure-atlas/) — Pages status: deployed from main by the Pages workflow. Verified [workflow run 39214464993](https://github.com/asadullah48/agent-failure-atlas/actions/runs/39214464993) from `main` at `859ff87`.
 
 The static recording is scripted/offline, uses synthetic data, and is not a live AI agent. It shows fixed fault-on results generated from both controllers, their recorded timelines, the single-use approval rule, and the regression tests. It does not run purchases or models in the browser.
 
@@ -100,7 +100,7 @@ python -X utf8 run.py
 
 Then open http://127.0.0.1:8765. On Windows use `py -3 -X utf8 run.py`. That version retains its Python/SQLite HTTP API; its interactive comparisons are separate from the static recording.
 
-The prepared Pages workflow generates the snapshot from source and deploys on push to `main`; `workflow_dispatch` can also build it manually, with deployment restricted to `main`. It uses official GitHub `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions. Pages is already enabled with workflow builds by the owner; this preparation does not change that setting. Status: **unverified until first Pages deploy**. Preparing this workflow does not enable Pages or rename the default branch.
+The prepared Pages workflow generates the snapshot from source and deploys on push to `main`; `workflow_dispatch` can also build it manually, with deployment restricted to `main`. It uses official GitHub `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions. Pages is already enabled with workflow builds by the owner; this preparation does not change that setting. Pages status: deployed from main by the Pages workflow. Preparing this workflow does not enable Pages or rename the default branch.
 
 Version 0.1, one constructed case, English only. Publication preparation does not establish a production deployment. Cases 002 (approval withdrawn) and 003 (stale supplier evidence) are listed in the UI as planned and are **not implemented**. Browser and visual QA remain unverified. CI is prepared for push and pull requests; local test results are separate from hosted CI results.
 
@@ -112,7 +112,7 @@ atlas/server.py               loopback HTTP API and static allowlist
 atlas/static/                 interactive web interface
 atlas/snapshot.py             offline static recording generator
 cases/001-response-lost.json  case metadata
-tests/                        unittest suite (29 tests)
+tests/                        unittest suite (30 tests)
 docs/                         case notes, validation record, checkpoint
 run.py                        server + export/verify CLI
 start-windows.cmd             Windows launcher

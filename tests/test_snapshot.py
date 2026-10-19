@@ -7,6 +7,7 @@ import subprocess
 import sys
 import tempfile
 import unittest
+from urllib.parse import urlsplit
 
 from atlas.core import run_case, verify_report
 from atlas.snapshot import generate, record, render_html, LABEL
@@ -42,6 +43,20 @@ class PageParser(HTMLParser):
 
 
 class SnapshotTests(unittest.TestCase):
+    def test_generated_github_source_links_target_main(self):
+        page = PageParser()
+        page.feed(render_html(record()))
+        source_links = []
+        for link in page.links + page.resources:
+            parsed = urlsplit(link)
+            parts = parsed.path.strip('/').split('/')
+            if parsed.hostname == 'github.com' and len(parts) >= 3 and parts[2] in {'blob', 'tree', 'raw'}:
+                source_links.append(link)
+                self.assertGreaterEqual(len(parts), 5, link)
+                self.assertEqual(parts[3], 'main', link)
+        self.assertTrue(source_links, 'Expected at least one GitHub source link')
+
+
     def test_snapshot_values_match_fresh_runs_and_rendered_cards(self):
         with tempfile.TemporaryDirectory() as tmp:
             out = Path(tmp) / 'site'
@@ -59,9 +74,12 @@ class SnapshotTests(unittest.TestCase):
             visible = ''.join(page.content)
             for value in [LABEL, 'AED 2,500.00', 'AED 1,250.00', 'fault.response_lost',
                           'Approval APR-001 backed 2 purchases',
-                          'test_repaired_reconciles_without_duplicate', '1 duplicate purchase orders',
+                          'test_repaired_reconciles_without_duplicate', '1 duplicate purchase order beyond', '1 purchase order', '2 purchase orders',
                           '0 duplicate purchase orders', 'single-use approval rule']:
                 self.assertIn(value, visible)
+            self.assertNotIn('1 purchase orders', visible)
+            self.assertNotIn('1 duplicate purchase orders', visible)
+            self.assertIn('Pages status: deployed from main by the Pages workflow.', visible)
 
     def test_generated_files_have_no_external_resources_or_absolute_paths(self):
         with tempfile.TemporaryDirectory() as tmp:

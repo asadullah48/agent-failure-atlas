@@ -24,13 +24,13 @@ Added `test_tracked_files_have_no_absolute_local_paths`. It reads every Git-trac
 
 No frontend framework or build tool: `atlas/static/index.html`, `app.js`, and `styles.css` are served by the standard-library `ThreadingHTTPServer` in `atlas/server.py`, started by `run.py`. `app.js` posts to `/api/run`; Python executes the SQLite simulation. The HTML also uses root-relative asset URLs.
 
-The complete current case page cannot run on GitHub Pages without a server. A future dependency-free static export could precompute reports and change the UI to consume relative JSON, but that is a feature change beyond publication preparation. Therefore the conditional Pages workflow was not added. Any future Pages workflow must be marked **unverified until first Pages deploy**. Nothing was deployed.
+The complete current case page cannot run on GitHub Pages without a server. A future dependency-free static export could precompute reports and change the UI to consume relative JSON, but that is a feature change beyond publication preparation. Therefore the conditional Pages workflow was not added. At that initial checkpoint, no Pages deployment had been performed. The verified static deployment is recorded below.
 
 ## Prepared files and verification limits
 
 MIT license, public-reader README with honest limits and related-project link, offline push/PR CI, tracked-file path guard, and evidence-mapped portfolio card draft. CI installs Python, checks out the repository, and runs standard-library unittest on Linux (Python 3.10 and 3.14) and Windows (3.14); it uses no configured secrets. The test execution is offline; Actions checkout and Python setup require network access.
 
-Local results do not establish hosted CI success. Browser/visual QA, other Python/OS matrix combinations, Pages, and production behavior remain unverified. Prior validation documents retain their historical results.
+Local results do not establish hosted CI success. At that checkpoint, browser/visual QA, other Python/OS matrix combinations, Pages, and production behavior remained unverified; later static checks and Pages deployment are recorded below. Prior validation documents retain their historical results.
 
 ## Static recording follow-up - 2026-10-19
 
@@ -38,8 +38,14 @@ The earlier Pages decision above describes the app before this follow-up. Added 
 
 Six snapshot tests cover fresh-run equality and visible results, external-resource/path exclusions, HTML escaping, deterministic output, non-overwrite behavior, and CLI generation. Full suite: **29 tests passed** on Windows / Python 3.14.7 using `py -3 -X utf8 -m unittest discover -s tests -v`.
 
-Prepared `.github/workflows/pages.yml` builds from source on push to `main` and supports `workflow_dispatch`; deployment is restricted to `main`. Official GitHub actions only, no new dependencies. Status: **unverified until first Pages deploy**. No workflow dispatch, Pages enablement, merge, rename, visibility change or deployment performed during preparation. Responsive CSS stacks the comparison below 680px; phone visual inspection is recorded separately if performed.
+Prepared `.github/workflows/pages.yml` builds from source on push to `main` and supports `workflow_dispatch`; deployment is restricted to `main`. Official GitHub actions only, no new dependencies. Pages status: deployed from main by the Pages workflow. No workflow dispatch, Pages enablement, merge, rename, visibility change or deployment performed during preparation. Responsive CSS stacks the comparison below 680px; phone visual inspection is recorded separately if performed.
 
-Branch correction: static snapshot prepared on `feat/static-snapshot`, based directly on `main` at `1d943e2`, as requested. Pages is already enabled with `build_type=workflow` per owner. The workflow uses official `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions; automatic Pages enablement is disabled. The generated snapshot remains **unverified until first Pages deploy**.
+Branch correction: static snapshot prepared on `feat/static-snapshot`, based directly on `main` at `1d943e2`, as requested. Pages is already enabled with `build_type=workflow` per owner. The workflow uses official `configure-pages`, `upload-pages-artifact`, and `deploy-pages` actions; automatic Pages enablement is disabled. Pages status: deployed from main by the Pages workflow.
 
 Static snapshot browser check: the generated directory was served on loopback only. At 380px the comparison used one 337px column, a 17px body font, and no horizontal overflow; the top viewport screenshot was visually inspected. At 1280px it used two 534px columns with no horizontal overflow. Both cards exposed the expected 2/1 order counts. Only local CSS and the browser's automatic local favicon request (404) were observed. The temporary preview server was stopped. This check applies to the static snapshot; the interactive app's older browser checklist remains separate.
+
+## Snapshot polish - 2026-10-19
+
+Pages status: deployed from main by the Pages workflow. Pages deploy verified: [workflow run 39214464993](https://github.com/asadullah48/agent-failure-atlas/actions/runs/39214464993), completed successfully from `main` at `859ff87`. This records the existing deployment, not a deployment of this polish branch.
+
+Prepared on `fix/snapshot-polish` from `859ff87`. Generated GitHub source links now use `blob/main/`; `test_generated_github_source_links_target_main` failed against the old feature-branch link before the fix. Snapshot value checks now enforce singular/plural purchase counts and the deployed status text. Full offline suite: **30 tests passed**, using `py -3 -X utf8 -m unittest discover -s tests -v`. No live-server changes, new dependencies, merge, visibility change, or workflow dispatch.
